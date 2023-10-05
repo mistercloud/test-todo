@@ -4,16 +4,17 @@ import ToDoItem from "@/components/ToDoItem.vue";
 
 
 onMounted(() => {
-  //console.log(`The initial count is ${count.value}.`)
+  if (localStorage.getItem('items')) {
+    try {
+      todos.value = JSON.parse(localStorage.getItem('items'));
+    } catch(e) {
+      localStorage.removeItem('items');
+    }
+  }
 })
 
-let items = [
-  { id : 1, value : 'ToDo 1'},
-  { id : 2, value : 'ToDo 2'},
-  { id : 3, value : 'ToDo 3'}
-]
 const newTodoText = ref('')
-const todos = ref(items)
+const todos = ref([])
 
 let nextTodoId = 4
 
@@ -23,16 +24,28 @@ function addNewTodo() {
     value: newTodoText.value
   })
   newTodoText.value = ''
+
+  saveToStorage()
+}
+
+function saveToStorage() {
+  const parsed = JSON.stringify(todos.value);
+  localStorage.setItem('items', parsed);
+}
+
+function remove(index) {
+  todos.value.splice(index, 1)
+  saveToStorage()
 }
 
 </script>
 
 <template>
-  <ToDoItem v-for="(item,index) in items"
+  <ToDoItem v-for="(item,index) in todos"
             :index="item.id"
             :value="item.value"
             :key="item.id"
-            @remove="todos.splice(index, 1)"
+            @remove="remove(index)"
   />
 
   <form v-on:submit.prevent="addNewTodo">
