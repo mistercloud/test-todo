@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+option go_package =  "github.com/mistercloud/test-todo/goapi";
+
+package goapi;
+
+import "google/protobuf/empty.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/api/annotations.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Cart";
+    version: "1.0.0";
+  };
+  host: "localhost:8082"
+  schemes: HTTP;
+  schemes: HTTPS;
+  consumes: "application/json";
+  produces: "application/json";
+  security_definitions: {
+    security: {
+      key: "bearerAuth";
+      value: {
+        type: TYPE_API_KEY;
+        in: IN_HEADER;
+        name: "Authorization";
+      }
+    }
+  }
+  security: {
+    security_requirement: {
+      key: "bearerAuth";
+      value: {}
+    }
+  }
+};
+
+service Todo {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+  };
+
+  rpc AddItem (AddItemRequest) returns (Item) {
+    option (google.api.http) = {
+      put: "/add",
+      response_body: "*"
+    };
+  }
+  rpc RemoveItem(RemoveItemRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/remove",
+    };
+  }
+  rpc GetItems(google.protobuf.Empty) returns (ItemList) {
+    option (google.api.http) = {
+      get: "/list"
+      response_body: "*"
+    };
+  }
+}
+
+message Item {
+  int32 id = 1;
+  string title = 2;
+}
+
+message ItemList {
+  repeated Item items = 1;
+}
+
+message AddItemRequest {
+  string title = 1;
+}
+
+message RemoveItemRequest {
+  int32 id = 1;
+}
