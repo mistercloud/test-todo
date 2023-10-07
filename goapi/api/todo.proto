@@ -26,13 +26,14 @@ service Todo {
 
   rpc AddItem (AddItemRequest) returns (Item) {
     option (google.api.http) = {
-      put: "/add",
+      post: "/add",
+      body: "*"
       response_body: "*"
     };
   }
   rpc RemoveItem(RemoveItemRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/remove",
+      delete: "/remove/{id}",
     };
   }
   rpc GetItems(google.protobuf.Empty) returns (ItemList) {
@@ -53,9 +54,20 @@ message ItemList {
 }
 
 message AddItemRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["title"]
+    }
+    example: "{\"title\": \"test\"}"
+  };
   string title = 1;
 }
 
 message RemoveItemRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["id"]
+    }
+  };
   int32 id = 1;
 }

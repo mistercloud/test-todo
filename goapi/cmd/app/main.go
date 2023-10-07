@@ -5,6 +5,7 @@ import (
 	"flag"
 	"github.com/mistercloud/test-todo/goapi/internal/entity"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"log"
 	"net"
 	"net/http"
 
@@ -80,8 +81,25 @@ func run() error {
 		return err
 	}
 
-	// Start HTTP server (and proxy calls to gRPC server endpoint)
-	return http.ListenAndServe(":8080", mux)
+	gwServer := &http.Server{
+		Addr:    `:8080`,
+		Handler: cors(mux),
+	}
+
+	log.Printf("Serving gRPC-Gateway on %s\n", gwServer.Addr) // запускаем HTTP сервер
+	return gwServer.ListenAndServe()
+}
+
+func cors(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, PUT")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization, ResponseType")
+		if r.Method == "OPTIONS" {
+			return
+		}
+		h.ServeHTTP(w, r)
+	})
 }
 
 func main() {

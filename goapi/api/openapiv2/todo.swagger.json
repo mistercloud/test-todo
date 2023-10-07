@@ -22,7 +22,7 @@
   ],
   "paths": {
     "/add": {
-      "put": {
+      "post": {
         "operationId": "Todo_AddItem",
         "responses": {
           "200": {
@@ -40,10 +40,12 @@
         },
         "parameters": [
           {
-            "name": "title",
-            "in": "query",
-            "required": false,
-            "type": "string"
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/goapiAddItemRequest"
+            }
           }
         ],
         "tags": [
@@ -73,7 +75,7 @@
         ]
       }
     },
-    "/remove": {
+    "/remove/{id}": {
       "delete": {
         "operationId": "Todo_RemoveItem",
         "responses": {
@@ -94,8 +96,8 @@
         "parameters": [
           {
             "name": "id",
-            "in": "query",
-            "required": false,
+            "in": "path",
+            "required": true,
             "type": "integer",
             "format": "int32"
           }
@@ -107,6 +109,20 @@
     }
   },
   "definitions": {
+    "goapiAddItemRequest": {
+      "type": "object",
+      "example": {
+        "title": "test"
+      },
+      "properties": {
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title"
+      ]
+    },
     "goapiItem": {
       "type": "object",
       "properties": {
