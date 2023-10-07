@@ -1,41 +1,43 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import ToDoItem from "@/components/ToDoItem.vue";
-
-
-onMounted(() => {
-  if (localStorage.getItem('items')) {
-    try {
-      todos.value = JSON.parse(localStorage.getItem('items'));
-    } catch(e) {
-      localStorage.removeItem('items');
-    }
-  }
-})
+import TodoService from "@/services/TodoService";
 
 const newTodoText = ref('')
+
+interface Item {
+  id : number
+  title: string
+}
+
 const todos = ref([])
 
-let nextTodoId = 4
+onMounted(() => {
+  updateItems()
+})
+
+function updateItems() {
+  TodoService.getList().then(response => {
+    todos.value = response.data.items
+  })
+      .catch(error => {
+        console.log(error)
+      })
+}
+
+
 
 function addNewTodo() {
-  todos.value.push({
-    id: nextTodoId++,
-    value: newTodoText.value
+  TodoService.addItem(newTodoText.value).then(response => {
+    todos.value.push(response.data)
   })
-  newTodoText.value = ''
-
-  saveToStorage()
 }
 
-function saveToStorage() {
-  const parsed = JSON.stringify(todos.value);
-  localStorage.setItem('items', parsed);
-}
 
-function remove(index) {
-  todos.value.splice(index, 1)
-  saveToStorage()
+function remove(index:number) {
+  TodoService.removeItem(index).then(response => {
+    updateItems()
+  })
 }
 
 </script>
@@ -43,9 +45,9 @@ function remove(index) {
 <template>
   <ToDoItem v-for="(item,index) in todos"
             :index="item.id"
-            :value="item.value"
+            :value="item.title"
             :key="item.id"
-            @remove="remove(index)"
+            @remove="remove(item.id)"
   />
 
   <form v-on:submit.prevent="addNewTodo">

@@ -1,0 +1,18 @@
+version: "3.1"
+services:
+  api:
+    image: api
+    build: ./goapi/
+    ports:
+      - "8080:8080"
+
+  swagger:
+    image: swaggerapi/swagger-ui:v5.7.2
+    environment:
+      - SWAGGER_JSON=/app/todo.json
+      - URLS=[{"url":"todo.json","name":"Todo"}]
+    volumes:
+      - ./goapi/api/openapiv2/todo.swagger.json:/app/todo.json
+    ports:
+      - "9080:8080"
+
