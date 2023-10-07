@@ -10,30 +10,14 @@ import "google/api/annotations.proto";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
-    title: "Cart";
+    title: "ToDo";
     version: "1.0.0";
   };
-  host: "localhost:8082"
+  host: "localhost:8080"
   schemes: HTTP;
   schemes: HTTPS;
   consumes: "application/json";
   produces: "application/json";
-  security_definitions: {
-    security: {
-      key: "bearerAuth";
-      value: {
-        type: TYPE_API_KEY;
-        in: IN_HEADER;
-        name: "Authorization";
-      }
-    }
-  }
-  security: {
-    security_requirement: {
-      key: "bearerAuth";
-      value: {}
-    }
-  }
 };
 
 service Todo {

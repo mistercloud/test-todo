@@ -3,6 +3,7 @@ module github.com/mistercloud/test-todo/goapi
 go 1.19
 
 require (
+	github.com/golang/glog v1.1.2
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20230822172742-b8732ec3820d
 	google.golang.org/grpc v1.58.2

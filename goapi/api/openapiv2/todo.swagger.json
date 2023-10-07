@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Cart",
+    "title": "ToDo",
     "version": "1.0.0"
   },
   "tags": [
@@ -9,7 +9,7 @@
       "name": "Todo"
     }
   ],
-  "host": "localhost:8082",
+  "host": "localhost:8080",
   "schemes": [
     "http",
     "https"
@@ -159,17 +159,5 @@
         }
       }
     }
-  },
-  "securityDefinitions": {
-    "bearerAuth": {
-      "type": "apiKey",
-      "name": "Authorization",
-      "in": "header"
-    }
-  },
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ]
+  }
 }
